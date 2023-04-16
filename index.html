@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        #map {
+            width: 937px;
+            height: 540px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/Iseng_1.js"></script>
+        <script src="data/IsengAja_2.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-6.265961355257519,106.63611134772489],[-6.082894718577663,106.95612269325798]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'feet',
+            secondaryLengthUnit: 'miles',
+            primaryAreaUnit: 'sqfeet',
+            secondaryAreaUnit: 'sqmiles'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleMaps_0');
+        map.getPane('pane_GoogleMaps_0').style.zIndex = 400;
+        var layer_GoogleMaps_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleMaps_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_GoogleMaps_0;
+        map.addLayer(layer_GoogleMaps_0);
+        function pop_Iseng_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LINK_ID'] !== null ? autolinker.link(feature.properties['LINK_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_ID'] !== null ? autolinker.link(feature.properties['POI_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SEQ_NUM'] !== null ? autolinker.link(feature.properties['SEQ_NUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FAC_TYPE'] !== null ? autolinker.link(feature.properties['FAC_TYPE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_NAME'] !== null ? autolinker.link(feature.properties['POI_NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_LANGCD'] !== null ? autolinker.link(feature.properties['POI_LANGCD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_NMTYPE'] !== null ? autolinker.link(feature.properties['POI_NMTYPE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_ST_NUM'] !== null ? autolinker.link(feature.properties['POI_ST_NUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ST_NUM_FUL'] !== null ? autolinker.link(feature.properties['ST_NUM_FUL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ST_NFUL_LC'] !== null ? autolinker.link(feature.properties['ST_NFUL_LC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ST_NAME'] !== null ? autolinker.link(feature.properties['ST_NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ST_LANGCD'] !== null ? autolinker.link(feature.properties['ST_LANGCD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_ST_SD'] !== null ? autolinker.link(feature.properties['POI_ST_SD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACC_TYPE'] !== null ? autolinker.link(feature.properties['ACC_TYPE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PH_NUMBER'] !== null ? autolinker.link(feature.properties['PH_NUMBER'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CHAIN_ID'] !== null ? autolinker.link(feature.properties['CHAIN_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAT_IMPORT'] !== null ? autolinker.link(feature.properties['NAT_IMPORT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PRIVATE'] !== null ? autolinker.link(feature.properties['PRIVATE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['IN_VICIN'] !== null ? autolinker.link(feature.properties['IN_VICIN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NUM_PARENT'] !== null ? autolinker.link(feature.properties['NUM_PARENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NUM_CHILD'] !== null ? autolinker.link(feature.properties['NUM_CHILD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PERCFRREF'] !== null ? autolinker.link(feature.properties['PERCFRREF'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['VANCITY_ID'] !== null ? autolinker.link(feature.properties['VANCITY_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_ADDR'] !== null ? autolinker.link(feature.properties['ACT_ADDR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_LANGCD'] !== null ? autolinker.link(feature.properties['ACT_LANGCD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_ST_NAM'] !== null ? autolinker.link(feature.properties['ACT_ST_NAM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_ST_NUM'] !== null ? autolinker.link(feature.properties['ACT_ST_NUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_ADMIN'] !== null ? autolinker.link(feature.properties['ACT_ADMIN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_POSTAL'] !== null ? autolinker.link(feature.properties['ACT_POSTAL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ENTR_TYPE'] !== null ? autolinker.link(feature.properties['ENTR_TYPE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Iseng_1_0() {
+            return {
+                pane: 'pane_Iseng_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(141,90,153,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Iseng_1');
+        map.getPane('pane_Iseng_1').style.zIndex = 401;
+        map.getPane('pane_Iseng_1').style['mix-blend-mode'] = 'normal';
+        var layer_Iseng_1 = new L.geoJson(json_Iseng_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Iseng_1',
+            layerName: 'layer_Iseng_1',
+            pane: 'pane_Iseng_1',
+            onEachFeature: pop_Iseng_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Iseng_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Iseng_1);
+        map.addLayer(layer_Iseng_1);
+        function pop_IsengAja_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LINK_ID'] !== null ? autolinker.link(feature.properties['LINK_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_ID'] !== null ? autolinker.link(feature.properties['POI_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SEQ_NUM'] !== null ? autolinker.link(feature.properties['SEQ_NUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FAC_TYPE'] !== null ? autolinker.link(feature.properties['FAC_TYPE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>POI_NAME</strong><br />' + (feature.properties['POI_NAME'] !== null ? autolinker.link(feature.properties['POI_NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_LANGCD'] !== null ? autolinker.link(feature.properties['POI_LANGCD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_NMTYPE'] !== null ? autolinker.link(feature.properties['POI_NMTYPE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_ST_NUM'] !== null ? autolinker.link(feature.properties['POI_ST_NUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ST_NUM_FUL'] !== null ? autolinker.link(feature.properties['ST_NUM_FUL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ST_NFUL_LC'] !== null ? autolinker.link(feature.properties['ST_NFUL_LC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ST_NAME'] !== null ? autolinker.link(feature.properties['ST_NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ST_LANGCD'] !== null ? autolinker.link(feature.properties['ST_LANGCD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POI_ST_SD'] !== null ? autolinker.link(feature.properties['POI_ST_SD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACC_TYPE'] !== null ? autolinker.link(feature.properties['ACC_TYPE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PH_NUMBER'] !== null ? autolinker.link(feature.properties['PH_NUMBER'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CHAIN_ID'] !== null ? autolinker.link(feature.properties['CHAIN_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAT_IMPORT'] !== null ? autolinker.link(feature.properties['NAT_IMPORT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PRIVATE'] !== null ? autolinker.link(feature.properties['PRIVATE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['IN_VICIN'] !== null ? autolinker.link(feature.properties['IN_VICIN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NUM_PARENT'] !== null ? autolinker.link(feature.properties['NUM_PARENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NUM_CHILD'] !== null ? autolinker.link(feature.properties['NUM_CHILD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PERCFRREF'] !== null ? autolinker.link(feature.properties['PERCFRREF'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['VANCITY_ID'] !== null ? autolinker.link(feature.properties['VANCITY_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_ADDR'] !== null ? autolinker.link(feature.properties['ACT_ADDR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_LANGCD'] !== null ? autolinker.link(feature.properties['ACT_LANGCD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_ST_NAM'] !== null ? autolinker.link(feature.properties['ACT_ST_NAM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_ST_NUM'] !== null ? autolinker.link(feature.properties['ACT_ST_NUM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_ADMIN'] !== null ? autolinker.link(feature.properties['ACT_ADMIN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACT_POSTAL'] !== null ? autolinker.link(feature.properties['ACT_POSTAL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ENTR_TYPE'] !== null ? autolinker.link(feature.properties['ENTR_TYPE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_IsengAja_2_0() {
+            return {
+                pane: 'pane_IsengAja_2',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,30,42,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_IsengAja_2');
+        map.getPane('pane_IsengAja_2').style.zIndex = 402;
+        map.getPane('pane_IsengAja_2').style['mix-blend-mode'] = 'normal';
+        var layer_IsengAja_2 = new L.geoJson(json_IsengAja_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_IsengAja_2',
+            layerName: 'layer_IsengAja_2',
+            pane: 'pane_IsengAja_2',
+            onEachFeature: pop_IsengAja_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_IsengAja_2_0(feature));
+            },
+        });
+        var cluster_IsengAja_2 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_IsengAja_2.addLayer(layer_IsengAja_2);
+
+        bounds_group.addLayer(layer_IsengAja_2);
+        cluster_IsengAja_2.addTo(map);
+        map.on("zoomend", function(e) {
+            if (map.getZoom() <= 19 && map.getZoom() >= 19) {
+                map.addLayer(cluster_IsengAja_2);
+            } else if (map.getZoom() > 19 || map.getZoom() < 19) {
+                map.removeLayer(cluster_IsengAja_2);
+            }
+        });
+            if (map.getZoom() <= 19 && map.getZoom() >= 19) {
+                map.addLayer(cluster_IsengAja_2);
+            } else if (map.getZoom() > 19 || map.getZoom() < 19) {
+                map.removeLayer(cluster_IsengAja_2);
+            }
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/IsengAja_2.png" /> Iseng Aja': cluster_IsengAja_2,'<img src="legend/Iseng_1.png" /> Iseng': layer_Iseng_1,"Google Maps": layer_GoogleMaps_0,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: cluster_Iseng_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'POI_NAME'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"LINK_ID": "int","CHAIN_ID": "int","SEQ_NUM": "int","NUM_PARENT": "int","FAC_TYPE": "int","ENTR_TYPE": "str","ACT_ADMIN": "str","PRIVATE": "str","ST_LANGCD": "str","ST_NUM_FUL": "str","POI_NMTYPE": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_LINK_ID = document.createElement("div");
+            div_LINK_ID.id = "div_LINK_ID";
+            div_LINK_ID.className = "slider";
+            document.getElementById("menu").appendChild(div_LINK_ID);
+            var lab_LINK_ID = document.createElement('div');
+            lab_LINK_ID.innerHTML  = 'LINK_ID: <span id="val_LINK_ID"></span>';
+            lab_LINK_ID.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_LINK_ID);
+            var reset_LINK_ID = document.createElement('div');
+            reset_LINK_ID.innerHTML = 'clear filter';
+            reset_LINK_ID.className = 'filterlabel';
+            lab_LINK_ID.className = 'filterlabel';
+            reset_LINK_ID.onclick = function() {
+                sel_LINK_ID.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_LINK_ID);
+            var sel_LINK_ID = document.getElementById('div_LINK_ID');
+            noUiSlider.create(sel_LINK_ID, {
+                connect: true,
+                start: [776747937, 1002519637],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 776747937,
+                max: 1002519637
+                }
+            });
+            sel_LINK_ID.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_LINK_ID = document.getElementById('val_LINK_ID');
+            val_LINK_ID.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_CHAIN_ID = document.createElement("div");
+            div_CHAIN_ID.id = "div_CHAIN_ID";
+            div_CHAIN_ID.className = "slider";
+            document.getElementById("menu").appendChild(div_CHAIN_ID);
+            var lab_CHAIN_ID = document.createElement('div');
+            lab_CHAIN_ID.innerHTML  = 'CHAIN_ID: <span id="val_CHAIN_ID"></span>';
+            lab_CHAIN_ID.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_CHAIN_ID);
+            var reset_CHAIN_ID = document.createElement('div');
+            reset_CHAIN_ID.innerHTML = 'clear filter';
+            reset_CHAIN_ID.className = 'filterlabel';
+            lab_CHAIN_ID.className = 'filterlabel';
+            reset_CHAIN_ID.onclick = function() {
+                sel_CHAIN_ID.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_CHAIN_ID);
+            var sel_CHAIN_ID = document.getElementById('div_CHAIN_ID');
+            noUiSlider.create(sel_CHAIN_ID, {
+                connect: true,
+                start: [3664, 9986],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 3664,
+                max: 9986
+                }
+            });
+            sel_CHAIN_ID.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_CHAIN_ID = document.getElementById('val_CHAIN_ID');
+            val_CHAIN_ID.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_SEQ_NUM = document.createElement("div");
+            div_SEQ_NUM.id = "div_SEQ_NUM";
+            div_SEQ_NUM.className = "slider";
+            document.getElementById("menu").appendChild(div_SEQ_NUM);
+            var lab_SEQ_NUM = document.createElement('div');
+            lab_SEQ_NUM.innerHTML  = 'SEQ_NUM: <span id="val_SEQ_NUM"></span>';
+            lab_SEQ_NUM.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_SEQ_NUM);
+            var reset_SEQ_NUM = document.createElement('div');
+            reset_SEQ_NUM.innerHTML = 'clear filter';
+            reset_SEQ_NUM.className = 'filterlabel';
+            lab_SEQ_NUM.className = 'filterlabel';
+            reset_SEQ_NUM.onclick = function() {
+                sel_SEQ_NUM.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_SEQ_NUM);
+            var sel_SEQ_NUM = document.getElementById('div_SEQ_NUM');
+            noUiSlider.create(sel_SEQ_NUM, {
+                connect: true,
+                start: [1, 2],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 1,
+                max: 2
+                }
+            });
+            sel_SEQ_NUM.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_SEQ_NUM = document.getElementById('val_SEQ_NUM');
+            val_SEQ_NUM.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_NUM_PARENT = document.createElement("div");
+            div_NUM_PARENT.id = "div_NUM_PARENT";
+            div_NUM_PARENT.className = "slider";
+            document.getElementById("menu").appendChild(div_NUM_PARENT);
+            var lab_NUM_PARENT = document.createElement('div');
+            lab_NUM_PARENT.innerHTML  = 'NUM_PARENT: <span id="val_NUM_PARENT"></span>';
+            lab_NUM_PARENT.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_NUM_PARENT);
+            var reset_NUM_PARENT = document.createElement('div');
+            reset_NUM_PARENT.innerHTML = 'clear filter';
+            reset_NUM_PARENT.className = 'filterlabel';
+            lab_NUM_PARENT.className = 'filterlabel';
+            reset_NUM_PARENT.onclick = function() {
+                sel_NUM_PARENT.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_NUM_PARENT);
+            var sel_NUM_PARENT = document.getElementById('div_NUM_PARENT');
+            noUiSlider.create(sel_NUM_PARENT, {
+                connect: true,
+                start: [0, 1],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 0,
+                max: 1
+                }
+            });
+            sel_NUM_PARENT.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_NUM_PARENT = document.getElementById('val_NUM_PARENT');
+            val_NUM_PARENT.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_FAC_TYPE = document.createElement("div");
+            div_FAC_TYPE.id = "div_FAC_TYPE";
+            div_FAC_TYPE.className = "slider";
+            document.getElementById("menu").appendChild(div_FAC_TYPE);
+            var lab_FAC_TYPE = document.createElement('div');
+            lab_FAC_TYPE.innerHTML  = 'FAC_TYPE: <span id="val_FAC_TYPE"></span>';
+            lab_FAC_TYPE.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_FAC_TYPE);
+            var reset_FAC_TYPE = document.createElement('div');
+            reset_FAC_TYPE.innerHTML = 'clear filter';
+            reset_FAC_TYPE.className = 'filterlabel';
+            lab_FAC_TYPE.className = 'filterlabel';
+            reset_FAC_TYPE.onclick = function() {
+                sel_FAC_TYPE.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_FAC_TYPE);
+            var sel_FAC_TYPE = document.getElementById('div_FAC_TYPE');
+            noUiSlider.create(sel_FAC_TYPE, {
+                connect: true,
+                start: [9535, 9536],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 9535,
+                max: 9536
+                }
+            });
+            sel_FAC_TYPE.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_FAC_TYPE = document.getElementById('val_FAC_TYPE');
+            val_FAC_TYPE.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ENTR_TYPE = document.createElement('div');
+            div_ENTR_TYPE.id = "div_ENTR_TYPE";
+            div_ENTR_TYPE.className= "filterselect";
+            document.getElementById("menu").appendChild(div_ENTR_TYPE);
+            sel_ENTR_TYPE = document.createElement('select');
+            sel_ENTR_TYPE.multiple = true;
+            sel_ENTR_TYPE.size = 1;
+            sel_ENTR_TYPE.id = "sel_ENTR_TYPE";
+            var ENTR_TYPE_options_str = "<option value='' unselected></option>";
+            sel_ENTR_TYPE.onchange = function(){filterFunc()};
+            ENTR_TYPE_options_str  += '<option value="NULL">NULL</option>';
+            sel_ENTR_TYPE.innerHTML = ENTR_TYPE_options_str;
+            div_ENTR_TYPE.appendChild(sel_ENTR_TYPE);
+            var lab_ENTR_TYPE = document.createElement('div');
+            lab_ENTR_TYPE.innerHTML = 'ENTR_TYPE';
+            lab_ENTR_TYPE.className = 'filterlabel';
+            div_ENTR_TYPE.appendChild(lab_ENTR_TYPE);
+            var reset_ENTR_TYPE = document.createElement('div');
+            reset_ENTR_TYPE.innerHTML = 'clear filter';
+            reset_ENTR_TYPE.className = 'filterlabel';
+            reset_ENTR_TYPE.onclick = function() {
+                var options = document.getElementById("sel_ENTR_TYPE").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_ENTR_TYPE.appendChild(reset_ENTR_TYPE);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ACT_ADMIN = document.createElement('div');
+            div_ACT_ADMIN.id = "div_ACT_ADMIN";
+            div_ACT_ADMIN.className= "filterselect";
+            document.getElementById("menu").appendChild(div_ACT_ADMIN);
+            sel_ACT_ADMIN = document.createElement('select');
+            sel_ACT_ADMIN.multiple = true;
+            sel_ACT_ADMIN.size = 1;
+            sel_ACT_ADMIN.id = "sel_ACT_ADMIN";
+            var ACT_ADMIN_options_str = "<option value='' unselected></option>";
+            sel_ACT_ADMIN.onchange = function(){filterFunc()};
+            ACT_ADMIN_options_str  += '<option value="NULL">NULL</option>';
+            sel_ACT_ADMIN.innerHTML = ACT_ADMIN_options_str;
+            div_ACT_ADMIN.appendChild(sel_ACT_ADMIN);
+            var lab_ACT_ADMIN = document.createElement('div');
+            lab_ACT_ADMIN.innerHTML = 'ACT_ADMIN';
+            lab_ACT_ADMIN.className = 'filterlabel';
+            div_ACT_ADMIN.appendChild(lab_ACT_ADMIN);
+            var reset_ACT_ADMIN = document.createElement('div');
+            reset_ACT_ADMIN.innerHTML = 'clear filter';
+            reset_ACT_ADMIN.className = 'filterlabel';
+            reset_ACT_ADMIN.onclick = function() {
+                var options = document.getElementById("sel_ACT_ADMIN").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_ACT_ADMIN.appendChild(reset_ACT_ADMIN);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_PRIVATE = document.createElement('div');
+            div_PRIVATE.id = "div_PRIVATE";
+            div_PRIVATE.className= "filterselect";
+            document.getElementById("menu").appendChild(div_PRIVATE);
+            sel_PRIVATE = document.createElement('select');
+            sel_PRIVATE.multiple = true;
+            sel_PRIVATE.size = 1;
+            sel_PRIVATE.id = "sel_PRIVATE";
+            var PRIVATE_options_str = "<option value='' unselected></option>";
+            sel_PRIVATE.onchange = function(){filterFunc()};
+            PRIVATE_options_str  += '<option value="N">N</option>';
+            sel_PRIVATE.innerHTML = PRIVATE_options_str;
+            div_PRIVATE.appendChild(sel_PRIVATE);
+            var lab_PRIVATE = document.createElement('div');
+            lab_PRIVATE.innerHTML = 'PRIVATE';
+            lab_PRIVATE.className = 'filterlabel';
+            div_PRIVATE.appendChild(lab_PRIVATE);
+            var reset_PRIVATE = document.createElement('div');
+            reset_PRIVATE.innerHTML = 'clear filter';
+            reset_PRIVATE.className = 'filterlabel';
+            reset_PRIVATE.onclick = function() {
+                var options = document.getElementById("sel_PRIVATE").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_PRIVATE.appendChild(reset_PRIVATE);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ST_LANGCD = document.createElement('div');
+            div_ST_LANGCD.id = "div_ST_LANGCD";
+            div_ST_LANGCD.className= "filterselect";
+            document.getElementById("menu").appendChild(div_ST_LANGCD);
+            sel_ST_LANGCD = document.createElement('select');
+            sel_ST_LANGCD.multiple = true;
+            sel_ST_LANGCD.size = 2;
+            sel_ST_LANGCD.id = "sel_ST_LANGCD";
+            var ST_LANGCD_options_str = "<option value='' unselected></option>";
+            sel_ST_LANGCD.onchange = function(){filterFunc()};
+            ST_LANGCD_options_str  += '<option value="NULL">NULL</option>';
+            ST_LANGCD_options_str  += '<option value="IND">IND</option>';
+            sel_ST_LANGCD.innerHTML = ST_LANGCD_options_str;
+            div_ST_LANGCD.appendChild(sel_ST_LANGCD);
+            var lab_ST_LANGCD = document.createElement('div');
+            lab_ST_LANGCD.innerHTML = 'ST_LANGCD';
+            lab_ST_LANGCD.className = 'filterlabel';
+            div_ST_LANGCD.appendChild(lab_ST_LANGCD);
+            var reset_ST_LANGCD = document.createElement('div');
+            reset_ST_LANGCD.innerHTML = 'clear filter';
+            reset_ST_LANGCD.className = 'filterlabel';
+            reset_ST_LANGCD.onclick = function() {
+                var options = document.getElementById("sel_ST_LANGCD").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_ST_LANGCD.appendChild(reset_ST_LANGCD);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ST_NUM_FUL = document.createElement('div');
+            div_ST_NUM_FUL.id = "div_ST_NUM_FUL";
+            div_ST_NUM_FUL.className= "filterselect";
+            document.getElementById("menu").appendChild(div_ST_NUM_FUL);
+            sel_ST_NUM_FUL = document.createElement('select');
+            sel_ST_NUM_FUL.multiple = true;
+            sel_ST_NUM_FUL.size = 1;
+            sel_ST_NUM_FUL.id = "sel_ST_NUM_FUL";
+            var ST_NUM_FUL_options_str = "<option value='' unselected></option>";
+            sel_ST_NUM_FUL.onchange = function(){filterFunc()};
+            ST_NUM_FUL_options_str  += '<option value="NULL">NULL</option>';
+            sel_ST_NUM_FUL.innerHTML = ST_NUM_FUL_options_str;
+            div_ST_NUM_FUL.appendChild(sel_ST_NUM_FUL);
+            var lab_ST_NUM_FUL = document.createElement('div');
+            lab_ST_NUM_FUL.innerHTML = 'ST_NUM_FUL';
+            lab_ST_NUM_FUL.className = 'filterlabel';
+            div_ST_NUM_FUL.appendChild(lab_ST_NUM_FUL);
+            var reset_ST_NUM_FUL = document.createElement('div');
+            reset_ST_NUM_FUL.innerHTML = 'clear filter';
+            reset_ST_NUM_FUL.className = 'filterlabel';
+            reset_ST_NUM_FUL.onclick = function() {
+                var options = document.getElementById("sel_ST_NUM_FUL").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_ST_NUM_FUL.appendChild(reset_ST_NUM_FUL);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_POI_NMTYPE = document.createElement('div');
+            div_POI_NMTYPE.id = "div_POI_NMTYPE";
+            div_POI_NMTYPE.className= "filterselect";
+            document.getElementById("menu").appendChild(div_POI_NMTYPE);
+            sel_POI_NMTYPE = document.createElement('select');
+            sel_POI_NMTYPE.multiple = true;
+            sel_POI_NMTYPE.size = 1;
+            sel_POI_NMTYPE.id = "sel_POI_NMTYPE";
+            var POI_NMTYPE_options_str = "<option value='' unselected></option>";
+            sel_POI_NMTYPE.onchange = function(){filterFunc()};
+            POI_NMTYPE_options_str  += '<option value="B">B</option>';
+            sel_POI_NMTYPE.innerHTML = POI_NMTYPE_options_str;
+            div_POI_NMTYPE.appendChild(sel_POI_NMTYPE);
+            var lab_POI_NMTYPE = document.createElement('div');
+            lab_POI_NMTYPE.innerHTML = 'POI_NMTYPE';
+            lab_POI_NMTYPE.className = 'filterlabel';
+            div_POI_NMTYPE.appendChild(lab_POI_NMTYPE);
+            var reset_POI_NMTYPE = document.createElement('div');
+            reset_POI_NMTYPE.innerHTML = 'clear filter';
+            reset_POI_NMTYPE.className = 'filterlabel';
+            reset_POI_NMTYPE.onclick = function() {
+                var options = document.getElementById("sel_POI_NMTYPE").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_POI_NMTYPE.appendChild(reset_POI_NMTYPE);
+        </script>
+    </body>
+</html>
